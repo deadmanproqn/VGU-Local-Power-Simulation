@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inheritJdk="true">
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="example-consumer.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/java-template/Simulator/library/example-consumer.jar!/"/>
+	</lib>
+	<lib name="example-control.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/java-template/Simulator/library/example-control.jar!/"/>
+	</lib>
+	<lib name="example-generator.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/java-template/Simulator/library/example-generator.jar!/"/>
+	</lib>
+</component>
