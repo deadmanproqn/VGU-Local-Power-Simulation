@@ -5,10 +5,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry excluding="test/|src/" kind="src" path=""/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Interfaces"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="library/example-consumer.jar"/>
 	<classpathentry kind="lib" path="library/example-control.jar"/>
 	<classpathentry kind="lib" path="library/example-generator.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Consumer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Interfaces"/>
 	<classpathentry kind="var" path="MAVEN_REPOSITORY/org/junit/jupiter/junit-jupiter-api/5.3.1/junit-jupiter-api-5.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
