@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 // -MUST be registered at the Control Model :NOT DONE
-// -MUST have an On and Off state,each with defined power: need config
+// -MUST have an On and Off state,each with defined power: DONE
 // -MAY be registered as cluster with other consumers(e.g.households): DONE
 // -MUST provide an interface to measure the power: DONE
 // -MUST provide an interface for remote changes: DONE
@@ -68,7 +68,7 @@ public class ConsumerFactory {
 		// this is the list of consummer
 		ArrayList<AbstractComponent> consumers = new ArrayList<>();
 		// for every consumer
-		for (int i = 1; i < amount; i++) {
+		for (int i = 1; i <= amount; i++) {
 			// generate a value equal avgPower + r*Deviation.
 			// r is from -1.0 to 1.0
 			double val = r.nextGaussian() * (double) std + (double) avgPower;
@@ -80,7 +80,7 @@ public class ConsumerFactory {
 
 		// TODO
 
-		return null;
+		return consumers;
 	}
 
 	// this class represent a single consumer
@@ -91,6 +91,15 @@ public class ConsumerFactory {
 		private int iteration = -1;
 		private boolean state = false;
 
+		/**
+		 * 
+		 * @param name      Component name
+		 * @param maxPower  Component maximum demand power
+		 * @param minPower  Component minimum demand power
+		 * @param maxChange
+		 * @param minChange
+		 * @param running
+		 */
 		public SingleComponent(String name, double maxPower, double minPower, double maxChange, double minChange,
 				double[] running) {
 			this.running = running;
@@ -131,7 +140,8 @@ public class ConsumerFactory {
 
 		@Override
 		public void next() {
-			// the folowing iteration simulate the state of the consumer is active or not base on the consumtion pattern.
+			// the folowing iteration simulate the state of the consumer is active or not
+			// base on the consumtion pattern.
 			++this.iteration;
 			Random r = new Random();
 			if (r.nextDouble() < this.running[this.iteration]) {
@@ -139,7 +149,7 @@ public class ConsumerFactory {
 			} else {
 				this.state = false;
 			}
-			//if the consumer is active, set max power, otherwise, set min power
+			// if the consumer is active, set max power, otherwise, set min power
 			if (this.state) {
 				this.power = this.getMaxPower();
 			} else {
