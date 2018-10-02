@@ -1,0 +1,102 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "Interfaces",
+                "projectName": "Interfaces",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Interfaces",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Simulator",
+                "projectName": "Simulator",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Simulator",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Generator",
+                "projectName": "Generator",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Generator",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Control",
+                "projectName": "Control",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Control",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Consumer",
+                "projectName": "Consumer",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Consumer",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "Interfaces",
+                "projectName": "Interfaces",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Interfaces",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Simulator",
+                "projectName": "Simulator",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Simulator",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Generator",
+                "projectName": "Generator",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Generator",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Control",
+                "projectName": "Control",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Control",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "Consumer",
+                "projectName": "Consumer",
+                "workingDirectory": "e:\\GitHub\\VGU-Local-Power-Simulation-1\\java-template\\Consumer",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}
