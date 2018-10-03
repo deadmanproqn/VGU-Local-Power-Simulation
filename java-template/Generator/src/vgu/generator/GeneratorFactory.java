@@ -1,17 +1,8 @@
 package vgu.generator;
 
+import interfaces.AbstractComponent;
 import java.util.ArrayList;
 
-import interfaces.AbstractComponent;
-
-/***
- * 
- * Empty template to generate a Generator Factory This Factory should return one
- * or several of the self-implemented Power-Supplies, derived from
- * 'interfaces.AbstractComponent'. It is a convenient place to implement
- * distribution and frequency of different generator types.
- *
- */
 public class GeneratorFactory extends AbstractComponent {
 	private double power;
 
@@ -39,28 +30,44 @@ public class GeneratorFactory extends AbstractComponent {
 	}
 
 	public void setPower(double power) {
-		if (this.power /* minPower */ == /* avgPower */power) {
-			return;
-		}
+		double maxPower = getMaxPower();
+		double minPower = getMinPower();
+		double maxChange = getMaxChange();
+		double minChange = getMinChange();
 
-		// absolute difference > maxChange
-		if (Math.abs(this.power/* minPower */ - /* avgPower */power) > getMaxChange()) {
-			this.power += getMaxChange();
-		}
-		// absolute difference < minChange
-		else if (Math.abs(this.power/* minPower */ - /* avgPower */power) < getMinChange()) {
-			this.power = (power + getMinChange());
-		}
-		// min <= abs diff <= max
-		else {
-			this.power = power;
-		}
+		if (power >= minPower && power <= maxPower) {
+			// calculate the difference between new power and original power
+			double diffPower = (this.power > power) ? this.power - power : power - this.power;
+			// new power and original power are the same
+			if (diffPower == 0) {
+				return;
+			}
 
-		// check the power after setting to keep it in the range [minPower, maxPower]
-		if (this.power > getMaxPower()) {
-			this.power = getMaxPower();
-		} else if (this.power < getMinPower()) {
-			this.power = getMinPower();
+			// new power and original power are different
+			// check if diffPower is in the range of minChange and maxChange
+			if (diffPower > maxChange) {
+				if (this.power > power) {
+					this.power -= maxChange;
+				} else {
+					this.power += maxChange;
+				}
+			} else if (diffPower < minChange) {
+				if (this.power > power) {
+					this.power -= minChange;
+				} else {
+					this.power += minChange;
+				}
+			} else {
+				this.power = power;
+				return;
+			}
+
+			// check if newly assigned power in the range of minPower and maxPower
+			if (this.power > maxPower) {
+				this.power = maxPower;
+			} else if (this.power < minPower) {
+				this.power = minPower;
+			}
 		}
 	}
 
@@ -81,33 +88,16 @@ public class GeneratorFactory extends AbstractComponent {
 	}
 
 	// generate a list of generators
-	public static ArrayList<AbstractComponent> generate(int numGen, double totalPower, double initialPower) {
+	public static ArrayList<AbstractComponent> generate(int numGen, double totalMaxPower, double initialPower) {
 		ArrayList<AbstractComponent> generator = new ArrayList();
-		double avgPower = totalPower / numGen;
+		double avgMaxPower = totalMaxPower / numGen;
 		for (int i = 0; i < numGen; ++i) {
-			generator.add(new GeneratorFactory("Generator_" + i, avgPower, 0.0, avgPower, avgPower));
-			if (initialPower > avgPower) {
-				// Generator g = (Generator) generator.get(i);
-				// System.out.println(g.getName());
-				generator.get(i).setPower(avgPower);
-				initialPower -= avgPower;
+			generator.add(new GeneratorFactory("Generator_" + i, avgMaxPower, 0.0, avgMaxPower, avgMaxPower));
+			if (initialPower > avgMaxPower) {
+				generator.get(i).setPower(avgMaxPower);
+				initialPower -= avgMaxPower;
 			}
 		}
 		return generator;
 	}
-
-	// public void print() {
-	// ArrayList<AbstractComponent> al = generate(10, 500, 200);
-	// for (AbstractComponent c : al) {
-	// Generator g = (Generator) c;
-	// System.out.println(g.getName()+" "+c.getMaxPower());
-	// }
-	// }
-	//
-	// public static void main(String[] args) {
-	// Generator g1 = new Generator();
-	// g1.print();
-	// //Generator g2 = new Generator("G2", 2000, 100, 1, 1);
-	// //System.out.println(g2.getCost());
-	// }
 }
