@@ -17,20 +17,34 @@ import java.util.ArrayList;
  * distribution and frequency of consumer types.
  *
  */
-public class ConsumerFactory {
+public class ConsumerFactory extends AbstractComponent {
+	private double[] run_patt = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
+	static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1, .5, .5 };
+	private double power;
+	private int iteration = -1;
+	private boolean state = false;
 	// class constructor
 	public ConsumerFactory() {
 	}
-
+	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange,
+			double minChange, double[] run_patt) {
+				this.run_patt = run_patt;
+				this.name = name;
+				this.setMinChange(minChange);
+				this.setMaxChange(maxChange);
+				this.setMinPower(minPower);
+				this.setMaxPower(maxPower);
+				this.power = minPower;
+				this.next();
+			}
 	/**
 	 * Stores the amount of consumers running at every iteration in percentage
 	 */
-	static double[] static_run_patt = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
-	static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1, .5, .5 };
+	
 
 	// this method set consummer run behavior
-	public static void setRunBehaviour(double[] run_patt) {
-		static_run_patt = run_patt;
+	public void setRunBehaviour(double[] run_patt) {
+		this.run_patt = run_patt;
 	}
 
 	/**
@@ -44,11 +58,10 @@ public class ConsumerFactory {
 	 * @return
 	 */
 	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
-			double minChange) {
+			double minChange,double[] run_patt) {
 		// call the factory
-		ConsumerFactory factory = new ConsumerFactory();
 		// to generate a consumer
-		return factory.new SingleComponent(name, maxPower, minPower, maxChange, minChange, static_run_patt);
+		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange, run_patt);
 	}
 
 	/**
@@ -60,9 +73,7 @@ public class ConsumerFactory {
 	 * @param deviation     Standard Deviation of power
 	 */
 	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int avg_min_Power,
-			int deviation) {
-		// new instance to generate
-		ConsumerFactory factory = new ConsumerFactory();
+			int deviation, double[] run_patt) {
 		// this is the list of consummer
 		ArrayList<AbstractComponent> consumers = new ArrayList<>();
 		// for every consumer
@@ -71,102 +82,72 @@ public class ConsumerFactory {
 			// r is from -1.0 to 1.0
 			double val_max = (-1 + Math.random() * (1 - (-1))) + (double) avg_max_Power;
 			double val_min = (-1 + Math.random() * (1 - (-1))) + (double) avg_min_Power;
-			// generate a consummer with said data
-			ConsumerFactory.SingleComponent c = factory.new SingleComponent("c" + i, val_max, val_min,
-					val_max - val_min, val_max - val_min, static_run_patt);
-			// and add it to the array
-			consumers.add(c);
+			// add a consummer with said data
+			consumers.add(new ConsumerFactory("c" + i, val_max, val_min,
+					val_max - val_min, val_max - val_min, run_patt));
+
 		}
 		return consumers;
 	}
 
-	// this class represent a single consumer
-	class SingleComponent extends AbstractComponent {
-		private double power;
-		private String name;
-		private double[] run_patt;
-		private int iteration = -1;
-		private boolean state = false;
+	@Override
+	public double getPower() {
+		return this.power;
+	}
 
-		/**
-		 * 
-		 * @param name      Component name
-		 * @param maxPower  Component maximum demand power
-		 * @param minPower  Component minimum demand power
-		 * @param maxChange Component maximum change per iteration
-		 * @param minChange Component minimum change per iteration
-		 * @param run_patt  Component running pattern
-		 */
-		public SingleComponent(String name, double maxPower, double minPower, double maxChange, double minChange,
-				double[] run_patt) {
-			this.run_patt = run_patt;
-			this.name = name;
-			this.setMinChange(minChange);
-			this.setMaxChange(maxChange);
-			this.setMinPower(minPower);
-			this.setMaxPower(maxPower);
-			this.power = minPower;
-			this.next();
-		}
-
-		@Override
-		public double getPower() {
-			return this.power;
-		}
-
-		@Override
-		public void setPower(double power) {
-			if (this.power != power) {
-				if (Math.abs(this.power - power) > this.getMaxChange()) {
-					if (power > this.power) {
-						this.power += this.getMaxChange();
-					} else {
-						this.power -= this.getMaxChange();
-					}
-				} else if (Math.abs(this.power - power) < this.getMinChange()) {
-					if (power > this.power) {
-						this.power = power + this.getMinChange();
-					} else {
-						this.power = power - this.getMinChange();
-					}
+	@Override
+	public void setPower(double power) {
+		if (this.power != power) {
+			if (Math.abs(this.power - power) > this.getMaxChange()) {
+				if (power > this.power) {
+					this.power += this.getMaxChange();
 				} else {
-					this.power = power;
+					this.power -= this.getMaxChange();
 				}
-
-				if (this.power > this.getMaxPower()) {
-					this.power = this.getMaxPower();
-				} else if (this.power < this.getMinPower()) {
-					this.power = this.getMinPower();
+			} else if (Math.abs(this.power - power) < this.getMinChange()) {
+				if (power > this.power) {
+					this.power = power + this.getMinChange();
+				} else {
+					this.power = power - this.getMinChange();
 				}
-
-			}
-
-		}
-
-		@Override
-		public void next() {
-			// the folowing iteration simulate the state of the consumer is active or not
-			// base on the consumtion pattern.
-			this.iteration++;
-			if (Math.random() < this.run_patt[this.iteration]) {
-				this.state = true;
 			} else {
-				this.state = false;
+				this.power = power;
 			}
-			// if the consumer is active, set max power, otherwise, set min power
-			if (this.state) {
+
+			if (this.power > this.getMaxPower()) {
 				this.power = this.getMaxPower();
-			} else {
+			} else if (this.power < this.getMinPower()) {
 				this.power = this.getMinPower();
 			}
 
 		}
 
-		@Override
-		public double getCost() {
-			return this.power;
+	}
+
+	@Override
+	public void next() {
+		// the folowing iteration simulate the state of the consumer is active or not
+		// base on the consumtion pattern.
+		this.iteration++;
+		if (Math.random() < this.run_patt[this.iteration]) {
+			this.state = true;
+		} else {
+			this.state = false;
+		}
+		// if the consumer is active, set max power, otherwise, set min power
+		if (this.state) {
+			this.power = this.getMaxPower();
+		} else {
+			this.power = this.getMinPower();
 		}
 
 	}
+
+	@Override
+	public double getCost() {
+		return this.power;
+	}
+
+	
 
 }
