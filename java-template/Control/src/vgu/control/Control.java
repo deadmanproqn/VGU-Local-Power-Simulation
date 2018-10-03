@@ -5,16 +5,17 @@ import interfaces.IControl;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * This empty control template can be best implemented by evaluating all
- * JUnit-TestCases. 
+ * JUnit-TestCases.
  */
 public class Control implements IControl {
 	ArrayList<AbstractComponent> generators = new ArrayList<AbstractComponent>();
 	ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
-	int overDemand = 0;
-	int underDemand = 0;
-	
+	int overload = 0;
+	int blackout = 0;
+
 	@Override
 	public void addGenerator(AbstractComponent generator) {
 		generators.add(generator);
@@ -47,158 +48,112 @@ public class Control implements IControl {
 
 	@Override
 	public double getTotalDemand() {
-		double result = 0.0D;
-	    for (AbstractComponent c : consumers) {
-	      result += c.getPower();
-	    }
-	    return result;
+		double demand = 0;
+		for (AbstractComponent c : consumers) {
+			demand += c.getPower();
+		}
+		return demand;
 	}
 
 	@Override
 	public double getTotalSupply() {
-		double result = 0.0D;
-	    for (AbstractComponent g : generators) {
-	      result += g.getPower();
-	    }
-	    return result;
+		double supply = 0.0D;
+		for (AbstractComponent g : generators) {
+			supply += g.getPower();
+		}
+		return supply;
 	}
 
 	@Override
 	public double getFrequency() {
-		double consume = getTotalDemand();
-	    double generation = getTotalSupply();
-	    double diff = (consume - generation)/Math.max(consume, generation);
-	    
-	    return 50.0D - diff*10;
+		double diff = (getTotalDemand() - getTotalSupply()) / Math.max(getTotalDemand(), getTotalSupply());
+		return 50.0D - diff * 10;
 	}
 
 	@Override
 	public double getCost() {
-		double result = 0.0D;
-	    for (AbstractComponent g : generators) {
-	      result += g.getCost();
-	    }
-	    return result;
+		double cost = 0;
+		for (AbstractComponent g : generators) {
+			cost += g.getCost();
+		}
+		return cost;
 	}
 
 	@Override
 	public double getProfit() {
-		double result = 0.0D;
-	    for (AbstractComponent g : consumers) {
-	      result += g.getCost();
-	    }
-	    return result;
+		return getTotalDemand();
 	}
 
 	@Override
 	public void nextIteration() {
-		double demand = getTotalDemand();
-	    double onePercent = demand / 100.0D;
-	    double supply = getTotalSupply();
-	    double diff = supply - demand;
-	    double availableChange = 0.0D;
-	    
-	    for (int i = 0; i < generators.size(); i++) {
-	    	AbstractComponent g = (AbstractComponent)generators.get(i);
-	    	if (diff > 0.0D) {
-	    		availableChange = Math.min(g.getMaxChange(), g.getPower() - g.getMinPower());
-	    		if (diff > availableChange) {
-	    			g.setPower(g.getPower() - availableChange);
-	    			diff -= availableChange;
-	    			if (diff < onePercent) {
-	    				break;
-	    			}
-	    		} else {
-	    			availableChange = Math.max(diff, g.getMinChange());
-	    			if (availableChange <= Math.abs(diff * 2.0D)) {
-	    				g.setPower(g.getPower() - availableChange);
-	    				diff -= availableChange;
-	    				if (diff < onePercent) {
-	        			break;
-	    				}
-	        	}
-	        }
-	      }
-	      if (diff < 0.0D) {
-	    	  availableChange = Math.min(g.getMaxChange(), g.getMaxPower() - g.getPower());
-	    	  if (Math.abs(diff) > availableChange) {
-	    		  g.setPower(g.getPower() + availableChange);
-	    		  diff += availableChange;
-	    	  }
-	    	  else {
-	    		  availableChange = Math.max(Math.abs(diff), g.getMinChange());  
-	    		  if (availableChange <= Math.abs(diff * 1.5D)) {
-	    			  g.setPower(g.getPower() + availableChange);
-	    			  diff += availableChange;
-	    			  if (Math.abs(diff) < onePercent) {
-	    				  break;
-	    			  }
-	    		  }
-	    	  }
-	      }
-	    }
-	    double frequency = getFrequency();
-	    frequencyRequirements(frequency);
-	}
-	private void frequencyRequirements(double frequency) {
-		if (frequency > 51.0D) {
-			int count = (int)Math.ceil(generators.size() / 100.0D * 10.0D);
-		    for (int i = 0; i < count; i++) {
-		    	generators.remove(0);
-		    }
-		    underDemand += 1;
-		    overDemand = 0;
-		    //System.out.println("Overload");
-		}
-		else if (frequency < 49.0D) {
-			int count = (int)Math.ceil(consumers.size() / 100.0D * 15.0D);
-		    for (int i = 0; i < count; i++) {
-		    	consumers.remove(0);
-		    }
-		    overDemand += 1;
-		    underDemand = 0;
-		    //System.out.println("Blackout");
-		}
-		else {
-		    overDemand = 0;
-		    underDemand = 0;
-		}
-		if ((overDemand == 3) || (underDemand == 3)) {
-		    consumers.clear();
-		    generators.clear();
-		    //System.out.println("Defect");
-		}
-	}
-	
-	//new
-	/*
-	 *Them 1 abstract void setState(), 1 String getName() vao AbstractComponent
-	 *public void setState() {
-			if(state) {
-				state = false;
-				power = getMinPower();
+		double changeAmount = 0;
+		double onePercent = getTotalDemand() / 100;
+		double diff = getTotalSupply() - getTotalDemand();
+		for (int i = 0; i < generators.size(); i++) {
+			AbstractComponent g = (AbstractComponent) generators.get(i);
+			if (diff > 0) {
+				changeAmount = changeAmount(diff, g);
+				g.setPower(g.getPower() - changeAmount);
+				diff -= changeAmount;
+				if (diff < onePercent) {
+					break;
+				}
 			}
-			else {
-				state = true;
-				power = getMaxPower();
+			if (diff < 0) {
+				changeAmount = changeAmount(diff, g);
+				g.setPower(g.getPower() + changeAmount);
+				diff += changeAmount;
+				if (Math.abs(diff) < onePercent) {
+					break;
+				}
 			}
 		}
-	 */
-	// public void ConsumerStateChange(String name) {
-	// 	for (AbstractComponent c : consumers) {
-	// 		if (c.getName().equals(name)) {
-	// 			c.setState();
-	// 		}
-	// 	}
-	// }
-	/*
-	 * Them private boolean state = true; vao Generator
-	 */
-	// public void GeneratorStateChange(String name) {
-	// 	for (AbstractComponent g : generators) {
-	// 		if (g.getName().equals(name)) {
-	// 			g.setState();
-	// 		}
-	// 	}
-	// }
+		double frequency = getFrequency();
+		checkFrequency(frequency);
+	}
+
+	public double changeAmount(double diff, AbstractComponent g) {
+		double availableChange = 0;
+
+		if (diff > 0) {
+			availableChange = Math.min(g.getMaxChange(), g.getPower() - g.getMinPower());
+		} else if (diff < 0) {
+			availableChange = Math.min(g.getMaxChange(), g.getMaxPower() - g.getPower());
+		}
+		if (availableChange < g.getMinChange()) {
+			availableChange = 0;
+		} else if (Math.abs(diff) < availableChange) {
+			availableChange = Math.max(Math.abs(diff), g.getMinChange());
+		}
+		return availableChange;
+	}
+
+	private void checkFrequency(double frequency) {
+		if (frequency > 51) {
+			int x = (int) Math.ceil(generators.size() * 0.1);
+			for (int i = 0; i < x; i++) {
+				generators.remove(0);
+			}
+			blackout = 0;
+			overload += 1;
+			// System.out.println("Overload!");
+		} else if (frequency < 49) {
+			int x = (int) Math.ceil(consumers.size() * 0.15);
+			for (int i = 0; i < x; i++) {
+				consumers.remove(0);
+			}
+			blackout += 1;
+			overload = 0;
+			// System.out.println("Blackout!");
+		} else {
+			blackout = 0;
+			overload = 0;
+		}
+
+		if ((overload == 3) || (blackout == 3)) {
+			consumers.clear();
+			generators.clear();
+			// System.out.println("Defect!");
+		}
+	}
 }
