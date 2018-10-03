@@ -18,35 +18,70 @@ import java.util.ArrayList;
  *
  */
 public class ConsumerFactory extends AbstractComponent {
+	//default run pattern
 	private double[] run_patt = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
-	static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1, .5, .5 };
+	//static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1, .5, .5 };
 	private double power;
 	private int iteration = -1;
 	private boolean state = false;
 	// class constructor
 	public ConsumerFactory() {
 	}
+	//contructor with custom run pattern
+	/**
+	 * 
+	 * @param name
+	 * @param maxPower
+	 * @param minPower
+	 * @param maxChange
+	 * @param minChange
+	 * @param run_patt
+	 */
 	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange,
 			double minChange, double[] run_patt) {
-				this.run_patt = run_patt;
-				this.name = name;
-				this.setMinChange(minChange);
-				this.setMaxChange(maxChange);
-				this.setMinPower(minPower);
-				this.setMaxPower(maxPower);
-				this.power = minPower;
-				this.next();
-			}
-	/**
-	 * Stores the amount of consumers running at every iteration in percentage
-	 */
+		this.run_patt = run_patt;
+		this.name = name;
+		this.setMinChange(minChange);
+		this.setMaxChange(maxChange);
+		this.setMinPower(minPower);
+		this.setMaxPower(maxPower);
+		this.power = minPower;
+		this.next();
+	}
+	//constructor using default run pattern	
+	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange, double minChange) {
+		this.name = name;
+		this.setMinChange(minChange);
+		this.setMaxChange(maxChange);
+		this.setMinPower(minPower);
+		this.setMaxPower(maxPower);
+		this.power = minPower;
+		this.next();
+	}
 	
-
 	// this method set consummer run behavior
 	public void setRunBehaviour(double[] run_patt) {
 		this.run_patt = run_patt;
 	}
 
+	/**
+	 * Generate a singe consumer with custom run Pattern
+	 * 
+	 * @param name
+	 * @param maxPower
+	 * @param minPower
+	 * @param maxChange
+	 * @param minChange
+	 * @param run_patt
+	 * @return
+	 */
+	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
+			double minChange, double[] run_patt) {
+		// call the factory
+		// to generate a consumer
+		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange, run_patt);
+	}
+	
 	/**
 	 * Generate a singe consumer
 	 * 
@@ -58,19 +93,20 @@ public class ConsumerFactory extends AbstractComponent {
 	 * @return
 	 */
 	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
-			double minChange,double[] run_patt) {
-		// call the factory
-		// to generate a consumer
-		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange, run_patt);
+			double minChange) {
+		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange);
 	}
 
 	/**
 	 * 
-	 * Generate a set of consumers.
+	 * Generate a set of consumers with custom run pattern.
 	 * 
 	 * @param amount        Nr. of consumers to generate
-	 * @param avg_max_Power Mean Power of <amount> consumers
+	 * @param avg_max_Power Mean maximun Power of <amount> consumers
+	 * @param avg_min_Power Mean minimun Power of <amount> consumers
 	 * @param deviation     Standard Deviation of power
+	 * @param run_patt	
+	 * @return
 	 */
 	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int avg_min_Power,
 			int deviation, double[] run_patt) {
@@ -83,8 +119,35 @@ public class ConsumerFactory extends AbstractComponent {
 			double val_max = (-1 + Math.random() * (1 - (-1))) + (double) avg_max_Power;
 			double val_min = (-1 + Math.random() * (1 - (-1))) + (double) avg_min_Power;
 			// add a consummer with said data
-			consumers.add(new ConsumerFactory("c" + i, val_max, val_min,
-					val_max - val_min, val_max - val_min, run_patt));
+			consumers.add(
+					new ConsumerFactory("c" + i, val_max, val_min, val_max - val_min, val_max - val_min, run_patt));
+
+		}
+		return consumers;
+	}
+	
+	/**
+	 * 
+	 * Generate a set of consumers with custom run pattern.
+	 * 
+	 * @param amount        Nr. of consumers to generate
+	 * @param avg_max_Power Mean maximun Power of <amount> consumers
+	 * @param avg_min_Power Mean minimun Power of <amount> consumers
+	 * @param deviation     Standard Deviation of power
+	 * @return
+	 */
+	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int avg_min_Power, int deviation) {
+		// this is the list of consummer
+		ArrayList<AbstractComponent> consumers = new ArrayList<>();
+		// for every consumer
+		for (int i = 1; i <= amount; i++) {
+			// generate a value equal avgPower + r*Deviation.
+			// r is from -1.0 to 1.0
+			double val_max = (-1 + Math.random() * (1 - (-1))) + (double) avg_max_Power;
+			double val_min = (-1 + Math.random() * (1 - (-1))) + (double) avg_min_Power;
+			// add a consummer with said data
+			consumers.add(
+					new ConsumerFactory("c" + i, val_max, val_min, val_max - val_min, val_max - val_min));
 
 		}
 		return consumers;
@@ -131,15 +194,12 @@ public class ConsumerFactory extends AbstractComponent {
 		this.iteration++;
 		if (Math.random() < this.run_patt[this.iteration]) {
 			this.state = true;
-		} else {
-			this.state = false;
-		}
-		// if the consumer is active, set max power, otherwise, set min power
-		if (this.state) {
 			this.power = this.getMaxPower();
 		} else {
+			this.state = false;
 			this.power = this.getMinPower();
 		}
+		// if the consumer is active, set max power, otherwise, set min power
 
 	}
 
