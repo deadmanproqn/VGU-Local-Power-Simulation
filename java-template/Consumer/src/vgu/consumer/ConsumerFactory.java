@@ -18,16 +18,19 @@ import java.util.ArrayList;
  *
  */
 public class ConsumerFactory extends AbstractComponent {
-	//default run pattern
-	private double[] run_patt = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
-	//static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1, .5, .5 };
+	// default run pattern
+	static double[] run_patt = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
+	// static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1,
+	// .5, .5 };
 	private double power;
 	private int iteration = -1;
 	private boolean state = false;
+
 	// class constructor
 	public ConsumerFactory() {
 	}
-	//contructor with custom run pattern
+
+	// contructor with custom run pattern
 	/**
 	 * 
 	 * @param name
@@ -35,13 +38,9 @@ public class ConsumerFactory extends AbstractComponent {
 	 * @param minPower
 	 * @param maxChange
 	 * @param minChange
-	 * @param run_patt
 	 */
-	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange,
-			double minChange, double[] run_patt) {
-		if (run_patt != null){
-			this.run_patt = run_patt;
-		}
+
+	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange, double minChange) {
 		this.name = name;
 		this.setMinChange(minChange);
 		this.setMaxChange(maxChange);
@@ -50,10 +49,10 @@ public class ConsumerFactory extends AbstractComponent {
 		this.power = minPower;
 		this.next();
 	}
-	
+
 	// this method set consummer run behavior
-	public void setRunBehaviour(double[] run_patt) {
-		this.run_patt = run_patt;
+	public static void setRunBehaviour(double[] run_patt) {
+		ConsumerFactory.run_patt = run_patt;
 	}
 
 	/**
@@ -64,16 +63,14 @@ public class ConsumerFactory extends AbstractComponent {
 	 * @param minPower
 	 * @param maxChange
 	 * @param minChange
-	 * @param run_patt
 	 * @return
 	 */
 	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
-			double minChange, double[] run_patt) {
+			double minChange) {
 		// call the factory
 		// to generate a consumer
-		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange, run_patt);
+		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange);
 	}
-	
 
 	/**
 	 * 
@@ -81,13 +78,11 @@ public class ConsumerFactory extends AbstractComponent {
 	 * 
 	 * @param amount        Nr. of consumers to generate
 	 * @param avg_max_Power Mean maximun Power of <amount> consumers
-	 * @param avg_min_Power Mean minimun Power of <amount> consumers
 	 * @param deviation     Standard Deviation of power
-	 * @param run_patt	
 	 * @return
 	 */
-	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int avg_min_Power,
-			int deviation, double[] run_patt) {
+	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power,
+			int deviation) {
 		// this is the list of consummer
 		ArrayList<AbstractComponent> consumers = new ArrayList<>();
 		// for every consumer
@@ -95,10 +90,8 @@ public class ConsumerFactory extends AbstractComponent {
 			// generate a value equal avgPower + r*Deviation.
 			// r is from -1.0 to 1.0
 			double val_max = (-1 + Math.random() * (1 - (-1))) + (double) avg_max_Power;
-			double val_min = (-1 + Math.random() * (1 - (-1))) + (double) avg_min_Power;
 			// add a consummer with said data
-			consumers.add(
-					new ConsumerFactory("c" + i, val_max, val_min, val_max - val_min, val_max - val_min, run_patt));
+			consumers.add(new ConsumerFactory("c" + i, val_max, 0, val_max, val_max));
 
 		}
 		return consumers;
@@ -143,7 +136,7 @@ public class ConsumerFactory extends AbstractComponent {
 		// the folowing iteration simulate the state of the consumer is active or not
 		// base on the consumtion pattern.
 		this.iteration++;
-		if (Math.random() < this.run_patt[this.iteration]) {
+		if (Math.random() < ConsumerFactory.run_patt[this.iteration]) {
 			this.state = true;
 			this.power = this.getMaxPower();
 		} else {
@@ -158,7 +151,5 @@ public class ConsumerFactory extends AbstractComponent {
 	public double getCost() {
 		return this.power;
 	}
-
-	
 
 }
