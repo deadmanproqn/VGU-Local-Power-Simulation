@@ -39,17 +39,9 @@ public class ConsumerFactory extends AbstractComponent {
 	 */
 	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange,
 			double minChange, double[] run_patt) {
-		this.run_patt = run_patt;
-		this.name = name;
-		this.setMinChange(minChange);
-		this.setMaxChange(maxChange);
-		this.setMinPower(minPower);
-		this.setMaxPower(maxPower);
-		this.power = minPower;
-		this.next();
-	}
-	//constructor using default run pattern	
-	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange, double minChange) {
+		if (run_patt != null){
+			this.run_patt = run_patt;
+		}
 		this.name = name;
 		this.setMinChange(minChange);
 		this.setMaxChange(maxChange);
@@ -82,20 +74,6 @@ public class ConsumerFactory extends AbstractComponent {
 		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange, run_patt);
 	}
 	
-	/**
-	 * Generate a singe consumer
-	 * 
-	 * @param name
-	 * @param maxPower
-	 * @param minPower
-	 * @param maxChange
-	 * @param minChange
-	 * @return
-	 */
-	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
-			double minChange) {
-		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange);
-	}
 
 	/**
 	 * 
@@ -121,33 +99,6 @@ public class ConsumerFactory extends AbstractComponent {
 			// add a consummer with said data
 			consumers.add(
 					new ConsumerFactory("c" + i, val_max, val_min, val_max - val_min, val_max - val_min, run_patt));
-
-		}
-		return consumers;
-	}
-	
-	/**
-	 * 
-	 * Generate a set of consumers with custom run pattern.
-	 * 
-	 * @param amount        Nr. of consumers to generate
-	 * @param avg_max_Power Mean maximun Power of <amount> consumers
-	 * @param avg_min_Power Mean minimun Power of <amount> consumers
-	 * @param deviation     Standard Deviation of power
-	 * @return
-	 */
-	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int avg_min_Power, int deviation) {
-		// this is the list of consummer
-		ArrayList<AbstractComponent> consumers = new ArrayList<>();
-		// for every consumer
-		for (int i = 1; i <= amount; i++) {
-			// generate a value equal avgPower + r*Deviation.
-			// r is from -1.0 to 1.0
-			double val_max = (-1 + Math.random() * (1 - (-1))) + (double) avg_max_Power;
-			double val_min = (-1 + Math.random() * (1 - (-1))) + (double) avg_min_Power;
-			// add a consummer with said data
-			consumers.add(
-					new ConsumerFactory("c" + i, val_max, val_min, val_max - val_min, val_max - val_min));
 
 		}
 		return consumers;
