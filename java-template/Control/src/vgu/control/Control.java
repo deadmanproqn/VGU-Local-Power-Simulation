@@ -2,9 +2,9 @@ package vgu.control;
 
 import interfaces.AbstractComponent;
 import interfaces.IControl;
+
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * This empty control template can be best implemented by evaluating all
@@ -87,32 +87,19 @@ public class Control implements IControl {
 	@Override
 	public void nextIteration() {
 		double changeAmount = 0;
-		double onePercent = getTotalDemand() / 100;
 		double diff = getTotalSupply() - getTotalDemand();
-		for (int i = 0; i < generators.size(); i++) {
-			AbstractComponent g = (AbstractComponent) generators.get(i);
-			if (diff > 0) {
-				changeAmount = changeAmount(diff, g);
-				g.setPower(g.getPower() - changeAmount);
-				diff -= changeAmount;
-				if (diff < onePercent) {
-					break;
-				}
-			}
-			if (diff < 0) {
-				changeAmount = changeAmount(diff, g);
-				g.setPower(g.getPower() + changeAmount);
-				diff += changeAmount;
-				if (Math.abs(diff) < onePercent) {
-					break;
-				}
-			}
+		double sign = diff / Math.abs(diff);
+		for (AbstractComponent g : generators) {
+			changeAmount = changeAmount(diff, g) * sign;
+			g.setPower(g.getPower() - changeAmount);
+			diff -= changeAmount;
 		}
+
 		double frequency = getFrequency();
 		checkFrequency(frequency);
 	}
 
-	public double changeAmount(double diff, AbstractComponent g) {
+	private double changeAmount(double diff, AbstractComponent g) {
 		double availableChange = 0;
 
 		if (diff > 0) {
