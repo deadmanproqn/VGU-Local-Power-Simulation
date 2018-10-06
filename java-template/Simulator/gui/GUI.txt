@@ -1,0 +1,11 @@
+1. Help > Eclipse Marketplace > find "javafx" > install e(fx)clipse 3.0.0 (or latest version)
+2. Download java Scene Builder (JavaFX Scene Builder) 
+https://www.oracle.com/technetwork/java/javase/archive-139210.html
+3. open eclipse > Preferences > JavaFX > add SceneBuilder executable path
+4. Create ChartController.java
+5. Create Run.java
+6. Create LineChart.fxml (New > Other > fxml file)
+for intelliJ IDEA
+1 create package gui in Simulator
+2 step 4 5 6 above
+3 intellij will do everything

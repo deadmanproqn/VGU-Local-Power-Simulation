@@ -2,7 +2,6 @@ package vgu.control;
 
 import interfaces.AbstractComponent;
 import interfaces.IControl;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +65,15 @@ public class Control implements IControl {
 
 	@Override
 	public double getFrequency() {
-		double diff = (getTotalDemand() - getTotalSupply()) / Math.max(getTotalDemand(), getTotalSupply());
-		return 50.0D - diff * 10;
+		// double diff = (getTotalDemand() - getTotalSupply()) /
+		// Math.max(getTotalDemand(), getTotalSupply());
+		// return 50.0D - diff * 10;
+		if (getTotalDemand() == 0 && getTotalSupply() == 0) {
+			return 0;
+		} else {
+			double diff = (getTotalDemand() - getTotalSupply()) / Math.max(getTotalDemand(), getTotalSupply());
+			return 50.0D - diff * 10;
+		}
 	}
 
 	@Override
