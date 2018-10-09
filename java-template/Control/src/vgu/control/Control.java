@@ -2,6 +2,7 @@ package vgu.control;
 
 import interfaces.AbstractComponent;
 import interfaces.IControl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class Control implements IControl {
 	ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
 	int overload = 0;
 	int blackout = 0;
+	double price = 1;
 
 	@Override
 	public void addGenerator(AbstractComponent generator) {
@@ -65,11 +67,8 @@ public class Control implements IControl {
 
 	@Override
 	public double getFrequency() {
-		// double diff = (getTotalDemand() - getTotalSupply()) /
-		// Math.max(getTotalDemand(), getTotalSupply());
-		// return 50.0D - diff * 10;
 		if (getTotalDemand() == 0 && getTotalSupply() == 0) {
-			return 0;
+			return 50;
 		} else {
 			double diff = (getTotalDemand() - getTotalSupply()) / Math.max(getTotalDemand(), getTotalSupply());
 			return 50.0D - diff * 10;
@@ -85,9 +84,30 @@ public class Control implements IControl {
 		return cost;
 	}
 
+	public void setPrice(double x) {
+		if (x > 0) {
+			price = x;
+		}
+	}
+
 	@Override
 	public double getProfit() {
-		return getTotalDemand();
+		checkBalance();
+		double profit = price * getTotalDemand();
+		return profit;
+	}
+
+	public void checkBalance() {
+		double balance = getProfit() - getCost();
+		double newPrice = 0;
+		if (balance <= 0) {
+			double x = getCost() / consumers.size();
+			newPrice = Math.round(x * 100d) / 100d;
+			if (newPrice < x) {
+				newPrice += 0.01;
+			}
+			setPrice(newPrice);
+		}
 	}
 
 	@Override

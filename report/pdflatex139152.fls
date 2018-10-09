@@ -1,0 +1,5 @@
+PWD e:/GitHub/VGU-Local-Power-Simulation-1/report
+INPUT c:/texlive/2018/texmf.cnf
+INPUT c:/texlive/2018/texmf-dist/web2c/texmf.cnf
+INPUT c:/texlive/2018/texmf-var/web2c/pdftex/pdflatex.fmt
+INPUT e:/GitHub/VGU-Local-Power-Simulation-1/report/template_Report.tex
