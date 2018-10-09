@@ -32,5 +32,20 @@ https://help.github.com/articles/set-up-git/#setting-up-git
  ```
   git push origin <branch name>
  ```
+### Report Structure
  
-  
+ - [x] Abstract
+ - [x] Chapter 1: intro
+ - [x] |-Motivation
+ - [x] |-Objective
+ - [x] |-Outline
+ - [ ] Chapter 2: Software analysis
+ - [ ] |- Architecture
+ - [ ] |- Use-Case analysis
+ - [ ] |- Class Diagram
+ - [ ] Chapter 3: Code explanation
+ - [ ] |- Consumer
+ - [ ] |- Generator
+ - [ ] |- Control
+ - [ ] |- Graphical User Interface
+ - [ ] Chapter 4: Conclusion
