@@ -32,6 +32,11 @@ https://help.github.com/articles/set-up-git/#setting-up-git
  ```
   git push origin <branch name>
  ```
+# How to work on report
+the file structure is divide into smaller section file
+just create a file name "chapter_<chapter name>_<section>"
+  example chapter_code_consumer.tex
+ 
 ### Report Structure
  
  - [x] Abstract
