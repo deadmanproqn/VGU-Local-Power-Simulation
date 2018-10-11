@@ -111,7 +111,10 @@ public class ConsumerFactory extends AbstractComponent {
 	 */
 	@Override
 	public void setPower(double power) {
-		if (this.power != power) {
+		if (power == -1) {
+			this.state = false;
+			this.power = 0;
+		}else if (this.power != power) {
 			if (Math.abs(this.power - power) > this.getMaxChange()) {
 				if (power > this.power) {
 					this.power += this.getMaxChange();
@@ -152,16 +155,6 @@ public class ConsumerFactory extends AbstractComponent {
 		}
 		// if the consumer is active, set max power, otherwise, set min power
 
-	}
-
-	public void next(boolean state) {
-		this.iteration++;
-		this.state = state;
-		if (!state) {
-			this.power = 0;
-		} else {
-			this.power = this.getMaxPower();
-		}
 	}
 
 	@Override
