@@ -159,6 +159,8 @@ public class ConsumerFactory extends AbstractComponent {
 		this.state = state;
 		if (!state) {
 			this.power = 0;
+		} else {
+			this.power = this.getMaxPower();
 		}
 	}
 
