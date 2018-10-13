@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class GeneratorFactory extends AbstractComponent {
 	private double power;
 
-	GeneratorFactory() {
+	public GeneratorFactory() {
 	}
 
-	GeneratorFactory(String name, double maxPower, double minPower, double maxChange, double minChange) {
+	public GeneratorFactory(String name, double maxPower, double minPower, double maxChange, double minChange) {
 		this.name = name;
 		setMaxPower(maxPower);
 		setMinPower(minPower);
@@ -20,6 +20,10 @@ public class GeneratorFactory extends AbstractComponent {
 
 	public void next() {
 	};
+
+	public String getStatus() {
+		return "Generator";
+	}
 
 	public String getName() {
 		return name;

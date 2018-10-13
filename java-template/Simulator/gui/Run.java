@@ -14,7 +14,7 @@ public class Run extends Application {
    public void start(Stage primaryStage) {
        try {
            Parent root = FXMLLoader.load(getClass()
-                   .getResource("/gui/LineChart.fxml"));
+                   .getResource("/gui/InputData.fxml"));
  
            primaryStage.setTitle("My Application");
            primaryStage.setScene(new Scene(root));

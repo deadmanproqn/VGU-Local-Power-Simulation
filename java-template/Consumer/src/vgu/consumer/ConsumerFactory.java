@@ -32,7 +32,7 @@ public class ConsumerFactory extends AbstractComponent {
 
 	// contructor with custom run pattern
 	/**
-	 * 
+	 *
 	 * @param name
 	 * @param maxPower
 	 * @param minPower
@@ -50,19 +50,23 @@ public class ConsumerFactory extends AbstractComponent {
 		this.next();
 	}
 
+	//new
+	public String getStatus() {
+		return ((this.state==false&&this.getPower()==0)?"Off":"On");
+	}
+	//new
+	public String getName() {
+		return name;
+	}
+
 	// this method set consummer run behavior
 	public static void setRunBehaviour(double[] run_patt) {
-		if (run_patt.length != 12) {
-			throw new IndexOutOfBoundsException(
-					"The Run Pattern is not compatible with this program. Please try again");
-		}
-
 		ConsumerFactory.run_patt = run_patt;
 	}
 
 	/**
 	 * Generate a singe consumer with custom run Pattern
-	 * 
+	 *
 	 * @param name
 	 * @param maxPower
 	 * @param minPower
@@ -71,32 +75,30 @@ public class ConsumerFactory extends AbstractComponent {
 	 * @return
 	 */
 	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
-			double minChange) {
+											 double minChange) {
 		// call the factory
 		// to generate a consumer
 		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange);
 	}
 
 	/**
-	 * 
+	 *
 	 * Generate a set of consumers with custom run pattern.
-	 * 
+	 *
 	 * @param amount        Nr. of consumers to generate
 	 * @param avg_max_Power Mean maximun Power of <amount> consumers
 	 * @param deviation     Standard Deviation of power
 	 * @return
 	 */
-	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int deviation) {
+	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power,int deviation) {
 		// this is the list of consummer
 		ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
 		for (int i = 1; i <= amount; i++) {
-			if (deviation > amount) {
-				throw new IllegalArgumentException("deviation is larger than Max power. please try again");
-			}
 			double val_max = (-1 + Math.random() * (1 - (-1))) * deviation + (double) avg_max_Power;
 			consumers.add(new ConsumerFactory("c" + i, val_max, 1, val_max, val_max));
 
 		}
+
 		return consumers;
 	}
 
@@ -105,16 +107,12 @@ public class ConsumerFactory extends AbstractComponent {
 		return this.power;
 	}
 
-	/**
-	 * @param power
-	 * @return
-	 */
 	@Override
 	public void setPower(double power) {
 		if (power == -1) {
 			this.state = false;
 			this.power = 0;
-		} else if (this.power != power) {
+		}else if (this.power != power) {
 			if (Math.abs(this.power - power) > this.getMaxChange()) {
 				if (power > this.power) {
 					this.power += this.getMaxChange();
@@ -154,7 +152,6 @@ public class ConsumerFactory extends AbstractComponent {
 			this.power = this.getMinPower();
 		}
 		// if the consumer is active, set max power, otherwise, set min power
-
 	}
 
 	@Override
