@@ -90,6 +90,9 @@ public class ConsumerFactory extends AbstractComponent {
 		// this is the list of consummer
 		ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
 		for (int i = 1; i <= amount; i++) {
+			if (deviation > amount) {
+				throw new IllegalArgumentException("deviation is larger than Max power. please try again");
+			}
 			double val_max = (-1 + Math.random() * (1 - (-1))) * deviation + (double) avg_max_Power;
 			consumers.add(new ConsumerFactory("c" + i, val_max, 1, val_max, val_max));
 
