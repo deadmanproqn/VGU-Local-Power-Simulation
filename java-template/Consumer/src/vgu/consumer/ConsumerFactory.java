@@ -53,9 +53,10 @@ public class ConsumerFactory extends AbstractComponent {
 	// this method set consummer run behavior
 	public static void setRunBehaviour(double[] run_patt) {
 		if (run_patt.length != 12) {
-			throw new IndexOutOfBoundsException("The Run Pattern is not compatible with this program. Please try again");
+			throw new IndexOutOfBoundsException(
+					"The Run Pattern is not compatible with this program. Please try again");
 		}
-		
+
 		ConsumerFactory.run_patt = run_patt;
 	}
 
@@ -88,13 +89,9 @@ public class ConsumerFactory extends AbstractComponent {
 	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int deviation) {
 		// this is the list of consummer
 		ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
-		// for every consumer
 		for (int i = 1; i <= amount; i++) {
-			// generate a value equal avgPower + r*Deviation.
-			// r is from -1.0 to 1.0
-			double val_max = (-1 + Math.random() * (1 - (-1))) + (double) avg_max_Power;
-			// add a consummer with said data
-			consumers.add(new ConsumerFactory("c" + i, val_max, 0, val_max, val_max));
+			double val_max = (-1 + Math.random() * (1 - (-1))) * deviation + (double) avg_max_Power;
+			consumers.add(new ConsumerFactory("c" + i, val_max, 1, val_max, val_max));
 
 		}
 		return consumers;
@@ -114,7 +111,7 @@ public class ConsumerFactory extends AbstractComponent {
 		if (power == -1) {
 			this.state = false;
 			this.power = 0;
-		}else if (this.power != power) {
+		} else if (this.power != power) {
 			if (Math.abs(this.power - power) > this.getMaxChange()) {
 				if (power > this.power) {
 					this.power += this.getMaxChange();
