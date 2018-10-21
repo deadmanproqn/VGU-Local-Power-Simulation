@@ -14,6 +14,7 @@
          <columns>
             <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
             <TableColumn fx:id="status" prefWidth="75.0" text="Status" />
+            <TableColumn fx:id="power" prefWidth="75.0" text="Power" />
             <TableColumn fx:id="maxPower" prefWidth="116.0" text="MaxPower" />
             <TableColumn fx:id="minPower" prefWidth="94.0" text="MinPower" />
             <TableColumn fx:id="maxChange" prefWidth="117.0" text="MaxChange" />

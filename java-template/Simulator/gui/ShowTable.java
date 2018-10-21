@@ -17,11 +17,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import vgu.consumer.ConsumerFactory;
 import vgu.control.Control;
 import vgu.generator.GeneratorFactory;
-
+/**
+ * Class controls InitialTable.fxml which displays data of consumers and generators on a table
+ * @author Nguyen The Viet - 9990
+ *
+ */
 public class ShowTable implements Initializable{
 	public ArrayList<AbstractComponent> list = new ArrayList<AbstractComponent>();
 	Control control = new Control();
 	public ArrayList<AbstractComponent> myList = new ArrayList<AbstractComponent>();
+	ArrayList<String> report = new ArrayList<String>();
 	int itr;
     @FXML
     private Button button;
@@ -40,9 +45,12 @@ public class ShowTable implements Initializable{
     private TableColumn<AbstractComponent, Double> maxPower;
     @FXML
     private TableColumn<AbstractComponent, String> status;
+    @FXML
+    private TableColumn<AbstractComponent, Double> power;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     	name.setCellValueFactory(new PropertyValueFactory<AbstractComponent,String>("Name"));
+    	power.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("Power"));
     	maxPower.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("MaxPower"));
     	minPower.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("MinPower"));
     	maxChange.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("MaxChange"));
@@ -51,6 +59,9 @@ public class ShowTable implements Initializable{
     	//viewData();
     }
     //<columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
+    /**
+     * Method displays data on table
+     */
     @FXML 
     public void viewData() {	
     	tableView.getItems().clear();
@@ -58,7 +69,10 @@ public class ShowTable implements Initializable{
         tableView.getItems().addAll(list); 	
 
     }
-    
+    /**
+     * Method get consumer and generator lists
+     * @return observable list of consumers and generators
+     */
     private ObservableList<AbstractComponent> getUserList(){
 
     	for(AbstractComponent i: control.getConsumers()) {
@@ -71,12 +85,18 @@ public class ShowTable implements Initializable{
         return list;    	
     }
 
+    /**
+     * 
+     * @param control returns control
+     */
     public void retrieveData(Control control) {
     	this.control = control;
     }
     public int getIteration() {
     	return itr;
     }
+    
+
 /**    
     private TableColumn<AbstractComponent, String> tableName;
     final ObservableList<AbstractComponent> data = FXCollections.observableArrayList(

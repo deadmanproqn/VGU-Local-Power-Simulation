@@ -1,5 +1,10 @@
 package gui;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 import interfaces.AbstractComponent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,18 +14,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import vgu.consumer.ConsumerFactory;
 import vgu.control.Control;
 import vgu.generator.GeneratorFactory;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-
+/**
+ * The class controls InputData.fxml which is used to get data input from users for the simulation
+ * @author Viet Nguyen - 9990
+ *
+ */
 public class InputController implements Initializable{
 
 	private String Con_Name, Gen_Name;
@@ -108,7 +116,7 @@ public class InputController implements Initializable{
     @FXML private Label totalGenerator;
     //start simulation
     @FXML private Button startButton;
-    @FXML private Button showButton;
+
     @FXML private Button clearButton;
     //table view
     @FXML
@@ -125,11 +133,13 @@ public class InputController implements Initializable{
     private TableColumn<AbstractComponent, Double> maxPower;
     @FXML
     private TableColumn<AbstractComponent, String> status;
-
+    @FXML
+    private TableColumn<AbstractComponent, Double> power;
     @FXML private Label simulation;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     	name.setCellValueFactory(new PropertyValueFactory<AbstractComponent,String>("Name"));
+    	power.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("Power"));
     	maxPower.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("MaxPower"));
     	minPower.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("MinPower"));
     	maxChange.setCellValueFactory(new PropertyValueFactory<AbstractComponent,Double>("MaxChange"));
@@ -137,11 +147,9 @@ public class InputController implements Initializable{
     	status.setCellValueFactory(new PropertyValueFactory<AbstractComponent,String>("Status")); 
     }
     //<columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
-    @FXML
-    void showAllList(ActionEvent event) {
-    	showList();
-    }
-    
+    /**
+     *Method displays data on table view format
+     */
     void showList() {
     	tableView.getItems().clear();
         ObservableList<AbstractComponent> list = getUserList();
@@ -151,6 +159,10 @@ public class InputController implements Initializable{
        // number = ""+control.getGenerators().size();
         totalGenerator.setText(Integer.toString(control.getGenerators().size()));    	
     }
+    /**
+     * Method returns list for table view
+     * @return observable list of consumers and generators
+     */
     private ObservableList<AbstractComponent> getUserList(){
     	ArrayList<AbstractComponent> myList = new ArrayList<AbstractComponent>();
     	for(AbstractComponent i: control.getConsumers()) {
@@ -162,12 +174,19 @@ public class InputController implements Initializable{
     	ObservableList<AbstractComponent> list = FXCollections.observableArrayList(myList);
         return list;    	
     }
-    
+    /**
+     * Methods remove all data from lists
+     * @param event is triggered if clicking Clear Data button
+     */
     @FXML void clearData(ActionEvent event) {
     	control.getConsumers().clear();
     	control.getGenerators().clear();   
     	showList();
     }
+    /**
+     * Method adds one consumer
+     * @param event is triggered if submitting data with "Enter" button in Consumer/Single tab
+     */
     @FXML
     void singleConEnter(ActionEvent event) {
     	singleConLabel.setText(null);
@@ -195,22 +214,30 @@ public class InputController implements Initializable{
     	}
     }
 
+    /**
+     * Method adds a certain number of consumers
+     * @param event is triggered if submitting data with "Enter" button in Consumer/Multiple tab
+     */
     @FXML
     void multiConEnter(ActionEvent event) {
     	multiConLabel.setText(null);
     	try {
+    		_deviation = Double.parseDouble(deviation.getText());
     		num_Con = Integer.parseInt(numCon.getText());
         	total_ConPower = Double.parseDouble(totalConPower.getText());
-        	_deviation = Double.parseDouble(deviation.getText());
-        	clearTextfield(numCon);
-        	clearTextfield(totalConPower);
-        	clearTextfield(deviation);
-    		consumers = ConsumerFactory.generate(num_Con, (int)total_ConPower, (int)_deviation);		
-    		for(AbstractComponent a : consumers) {			
-    			control.addConsumer(a);
+        	if(_deviation >= total_ConPower || _deviation < 0) {
+        		multiConLabel.setText("deviation < 0 or > power");
+        	}else {
+	        	clearTextfield(numCon);
+	        	clearTextfield(totalConPower);
+	        	clearTextfield(deviation);
+	    		consumers = ConsumerFactory.generate(num_Con, (int)total_ConPower, (int)_deviation);		
+	    		for(AbstractComponent a : consumers) {			
+	    			control.addConsumer(a);
+	    		}
+	    		simulation.setText(null);
+	    		showList();
     		}
-    		simulation.setText(null);
-    		showList();
     	} catch (Exception e) {
     		System.out.println(e);
     		multiConLabel.setText("Invalid input");
@@ -218,6 +245,10 @@ public class InputController implements Initializable{
     	
     }
 
+    /**
+     * Method adds a generator
+     * @param event is triggered if submitting data with "Enter" button in Generator/Single tab
+     */
     @FXML
     void singleGenEnter(ActionEvent event) {
     	singleGenLabel.setText(null);
@@ -237,14 +268,17 @@ public class InputController implements Initializable{
         	clearTextfield(GenMaxChange);
         	clearTextfield(GenMinChange);
     		simulation.setText(null);
-        	control.addGenerator(new GeneratorFactory(Con_Name,Con_MaxPower,Con_MinPower,Con_MaxChange,Con_MinChange));
+        	control.addGenerator(new GeneratorFactory(Gen_Name,Gen_MaxPower,Gen_MinPower,Gen_MaxChange,Gen_MinChange));
         	showList();
     	} catch (Exception e) {
     		System.out.println(e);
     		singleGenLabel.setText("Invalid input");
     	}
     }
-
+    /**
+     * Method adds a certain number of generators
+     * @param event is triggered if submitting data with "Enter" button in Generator/Multiple tab
+     */
     @FXML
     void multiGenEnter(ActionEvent event) {
     	multiGenLabel.setText(null);
@@ -266,7 +300,10 @@ public class InputController implements Initializable{
     		multiGenLabel.setText("Invalid input");
     	}
     }
-    
+    /**
+     * Method opens Simulation window (LineChart.fxml)
+     * @param event is triggered if submitting data with "Enter" button in Generator/Multiple tab
+     */
     @FXML
     void startSimulation(ActionEvent event) {
     	if(control.getConsumers().isEmpty() && control.getGenerators().isEmpty()) {
@@ -285,13 +322,17 @@ public class InputController implements Initializable{
 	    		chartController.drawGraph();
 	    		Stage stage = new Stage();
 	    		stage.setScene(new Scene(root));
+	    		stage.setTitle("Simulator");
 	    		stage.show();
 	    	}catch(IOException e) {
 	    		e.printStackTrace();
 	    	}
     	}
     }    
-    
+    /**
+     * Method generates data based on requirement of 2 scenarios (100 consumers & 15 generators)
+     * @param event is triggered if clicking Generate Scenario button
+     */    
     @FXML 
     void generateScenario(ActionEvent event) {
     	ArrayList<AbstractComponent> consumer, generator;
@@ -310,7 +351,10 @@ public class InputController implements Initializable{
     	tf.clear();
     }
     
-    //get consumer list
+    /**
+     * 
+     * @return consumers list
+     */
     public ArrayList<AbstractComponent> getConsumerList(){
     	ArrayList<AbstractComponent> myList = new ArrayList<AbstractComponent>();
     	for(AbstractComponent i: control.getConsumers()) {
@@ -318,7 +362,10 @@ public class InputController implements Initializable{
     	}
     	return myList;
     }
-    //get generator list
+    /**
+     * 
+     * @return generators list
+     */
     public ArrayList<AbstractComponent> getGeneratorList(){
     	ArrayList<AbstractComponent> myList = new ArrayList<AbstractComponent>();
     	for(AbstractComponent i: control.getGenerators()) {

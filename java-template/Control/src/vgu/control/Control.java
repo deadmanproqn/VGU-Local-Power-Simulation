@@ -1,22 +1,28 @@
 package vgu.control;
-
 import interfaces.AbstractComponent;
 import interfaces.IControl;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 /**
- * This empty control template can be best implemented by evaluating all
- * JUnit-TestCases. 
+ * 
+ * @author Nguyen Hai Duc	- 9701
+ * @author Hoang Thai Duong	- 11052
+ *
  */
 public class Control implements IControl {
 	ArrayList<AbstractComponent> generators = new ArrayList<AbstractComponent>();
 	ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
+	ArrayList<AbstractComponent> industrial = new ArrayList<AbstractComponent>();
+	ArrayList<AbstractComponent> residential = new ArrayList<AbstractComponent>();
+	
 	int overload = 0;
 	int blackout = 0;
 	double price = 1;
 	double balance = 0;
+	
+	ArrayList<AbstractComponent> backups = new ArrayList<AbstractComponent>();
+	boolean backup = false;
 	
 	@Override
 	public void addGenerator(AbstractComponent generator) {
@@ -34,12 +40,13 @@ public class Control implements IControl {
 	}
 
 	@Override
-	public void addConsumer(AbstractComponent consumer) {
-		consumers.add(consumer);
-	}
-
-	@Override
 	public void removeConsumer(AbstractComponent consumer) {
+		int flag = ((vgu.consumer.ConsumerFactory)consumer).getFlag();
+		if (flag == 0) {
+			residential.remove(consumer);
+		} else if (flag == 1) {
+			industrial.remove(consumer);
+		} 
 		consumers.remove(consumer);
 	}
 
@@ -47,7 +54,14 @@ public class Control implements IControl {
 	public List<AbstractComponent> getConsumers() {
 		return consumers;
 	}
-
+	
+	public List<AbstractComponent> getIndustries(){
+		return industrial;
+	}
+	
+	public List<AbstractComponent> getResidents(){
+		return residential;
+	}
 	@Override
 	public double getTotalDemand() {
 		double demand = 0;
@@ -65,6 +79,11 @@ public class Control implements IControl {
 		if(generators.size() > 0) {
 			for (AbstractComponent g : generators) {
 				supply += g.getPower();
+			}
+			if (backup) {
+				for (AbstractComponent b : backups) {
+					supply += b.getPower();
+				}
 			}
 		}
 	    return supply;
@@ -85,9 +104,14 @@ public class Control implements IControl {
 	@Override
 	public double getCost() {
 		double cost = 0;
-	    for (AbstractComponent g : generators) {
-	    	cost += g.getCost();
-	    }
+		for (AbstractComponent g : generators) {
+			cost += g.getCost();
+		}
+		if (backup) {
+			for (AbstractComponent b : backups) {
+				cost += (b.getCost() + 0.25*b.getPower());
+			}
+		}
 	    return cost;
 	}
 
@@ -110,17 +134,22 @@ public class Control implements IControl {
 		return balance;
 	}
 	
-	public void checkBalance() {
-		double x = 0;
-		if(getBalance() < 0) {
-			x = Math.abs(getBalance())/getTotalSupply();
-			x = Math.round(x * 100d) / 100d;
-			setPrice(price + x);
+	public void checkBalance(double amount) {
+		if(amount < 0) {
+			double x = Math.abs(amount)/getTotalSupply();
+			double y = Math.round(x * 100d) / 100d;
+			if (y < x) {
+				y += 0.01;
+			}
+			setPrice(price + y);
 		}
 	}
 
 	@Override
 	public void nextIteration() {
+		//
+		backup = false;
+		//
 		double changeAmount = 0;
 	    double diff = getTotalSupply() - getTotalDemand();
 	    double sign = diff/Math.abs(diff);
@@ -129,13 +158,31 @@ public class Control implements IControl {
 			g.setPower(g.getPower() - changeAmount);
 			diff -= changeAmount;
 	    }
-	    double x = getProfit() - getCost();
-	    balance += x;
-	    checkBalance();
+	    
 	    double frequency = getFrequency();
 	    checkFrequency(frequency);
+	    /**
+	    //
+	    if (getFrequency() < 48) {
+	    	//System.out.println("Fre= " + getFrequency() + " .Sup= " + getTotalSupply());
+	    	backup = true;
+	    	double bchangeAmount = 0;
+	    	double bdiff = getTotalSupply() - getTotalDemand();
+	    	double bsign = bdiff/Math.abs(bdiff);
+	    	for (AbstractComponent b : backups) {
+	    		changeAmount = changeAmount(bdiff,b)*bsign;
+				b.setPower(b.getPower() - bchangeAmount);
+				bdiff -= bchangeAmount;
+	    	}
+	    	//System.out.println("New Fre= " + getFrequency() + " .New Sup= " + getTotalSupply());
+	    }
+	    //
+	    */
+	    checkBalance(getProfit() - getCost());
+	    balance += (getProfit() - getCost());
+	    setActivityPower();
 	}
-	
+
 	private double changeAmount(double diff, AbstractComponent g) {
 		double availableChange = 0;
 		
@@ -181,6 +228,132 @@ public class Control implements IControl {
 		    consumers.clear();
 		    generators.clear();
 		    //System.out.println("Defect!");
+		}
+	}
+	public void addBackups(AbstractComponent generator) {
+		backups.add(generator);
+	}
+	public void removeBackups(AbstractComponent generator) {
+		backups.remove(generator);
+	}
+	public List<AbstractComponent> getBackups() {
+		return backups;
+	}
+
+	public int getBlackOut() {
+		return this.blackout;
+	}
+	
+	public int getOverLoad() {
+		return this.overload;
+	}
+
+	public double getTotalMachinDrive() {
+		double sum = 0.0;
+		for (AbstractComponent ac : industrial) {
+			sum += ((vgu.consumer.Industrial)ac).getMachineDrive();
+		}
+		return sum;
+	}
+	public double getTotalMaintenance() {
+		double sum = 0.0;
+		for (AbstractComponent ac : industrial) {
+			sum += ((vgu.consumer.Industrial)ac).getMaintenace();
+		}
+		return sum;
+	}
+	public double getTotalOtherProcesses() {
+		double sum = 0.0;
+		for (AbstractComponent ac : industrial) {
+			sum += ((vgu.consumer.Industrial)ac).getOtherProcesses();
+		}
+		return sum;
+	}
+	public double getTotalAppliances() {
+		double sum = 0.0;
+		for (AbstractComponent ac : residential) {
+			sum += ((vgu.consumer.Residential)ac).getAppliances();
+		}
+		return sum;
+	}
+	public double getTotalLighting() {
+		double sum = 0.0;
+		for (AbstractComponent ac : residential) {
+			sum += ((vgu.consumer.Residential)ac).getLighting();
+		}
+		return sum;
+	}
+	public double getTotalOtherUses() {
+		double sum = 0.0;
+		for (AbstractComponent ac : residential) {
+			sum += ((vgu.consumer.Residential)ac).getOtherUses();
+		}
+		return sum;
+	}
+	
+	public void addConsumer(AbstractComponent consumer) {
+		consumers.add(consumer);
+		// categorize consumers
+		int flag = ((vgu.consumer.ConsumerFactory)consumer).getFlag();
+		if (flag == 0) {
+			residential.add(consumer);
+		} else if (flag == 1){
+			industrial.add(consumer);
+		}
+	}
+// each consumer has different activities and activity's consumption
+	public void setActivityPower() {
+			if(!consumers.isEmpty()) {	
+				int iteration = ((vgu.consumer.ConsumerFactory)consumers.get(0)).getIteration();
+				if (iteration>=-1 && iteration<3) {
+					setIndustrial(5, 10, 40, 50);
+					setResidential(10, 15, 30, 40);
+				} else if (iteration>=3 && iteration<=8) {
+					setIndustrial(50, 80, 5, 10);
+					setResidential(35, 40, 35, 40);
+				} else {
+					setIndustrial(10, 15, 45, 55);
+					setResidential(25, 35, 25, 35);
+				}
+			}else {
+				industrial.clear();
+				residential.clear();
+			}
+	}
+	
+	private void setIndustrial(double l1, double r1, double l2, double r2) {
+		//System.out.println("here1");
+		if (industrial.size() != 0) {
+			//System.out.println("here1a");
+			for (AbstractComponent ac : industrial) {
+				double power = ((vgu.consumer.ConsumerFactory)ac).getPower();
+				double onePercent = power/100;
+				// calculate percentages for each activity
+				double machine = (new Random().nextDouble()*(r1-l1)+l1)*onePercent;
+				double maintenance = (new Random().nextDouble()*(r2-l2)+l2)*onePercent;
+				double others = power - (machine+maintenance);
+				((vgu.consumer.Industrial)ac).setMachineDrive(machine);
+				((vgu.consumer.Industrial)ac).setMaintenance(maintenance);
+				((vgu.consumer.Industrial)ac).setOtherProcesses(others);
+			}
+		}
+	}
+	
+	private void setResidential(double l1, double r1, double l2, double r2) {
+		//System.out.println("here2");
+		if (residential.size() != 0) {
+			//System.out.println("here2a");
+			for (AbstractComponent ac : residential) {
+				double power = ((vgu.consumer.ConsumerFactory)ac).getPower();
+				double onePercent = power/100;
+				// calculate percentages for each activity
+				double appliances = (new Random().nextDouble()*(r1-l1)+l1)*onePercent;
+				double lighting = (new Random().nextDouble()*(r2-l2)+l2)*onePercent;
+				double others = power - (appliances+lighting);
+				((vgu.consumer.Residential)ac).setAppliances(appliances);
+				((vgu.consumer.Residential)ac).setLighting(lighting);
+				((vgu.consumer.Residential)ac).setOtherUses(others);
+			}
 		}
 	}
 }

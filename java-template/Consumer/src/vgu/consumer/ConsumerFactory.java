@@ -1,163 +1,177 @@
 package vgu.consumer;
-
 import interfaces.AbstractComponent;
 import java.util.ArrayList;
-
-// -MUST be registered at the Control Model :NOT DONE
-// -MUST have an On and Off state,each with defined power: DONE
-// -MAY be registered as cluster with other consumers(e.g.households): DONE
-// -MUST provide an interface to measure the power: DONE
-// -MUST provide an interface for remote changes: DONE
-// -MAY change state due to internal or external conditions (e.g. time, weather,
-// price ..): OPTIONAL
-/***
- * This is an empty template to implement a Consumer Factory. This Factory
- * should return one or several of the self-implemented Consumers, derived from
- * 'interfaces.AbstractComponent' It is a convenient place implement
- * distribution and frequency of consumer types.
+import java.util.Random;
+/**
+ * class ConsumerFactory creates consumers
+ * 
+ * @author Hoang Thai Duong	- 11052
+ * @author Tra Ngoc Nguyen	- 10248
  *
  */
 public class ConsumerFactory extends AbstractComponent {
-	// default run pattern
-	static double[] run_patt = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
-	// static double[] run_heavy = new double[] { .5, .5, .5, 1, 1, 1, 1, 1, 1, 1,
-	// .5, .5 };
-	private double power;
+	// array to store percentage of power consumption in each iteration
+	static double[] iterationArray = new double[] { .5, .2, .15, .45, .75, .60, .55, .40, .45, .65, .95, .75 };
+	// counter variable of iterationArray
 	private int iteration = -1;
+	// current using power of each consumer
+	private double power;
+	// types of consumers are 2
+	private static final int type = 2;
+	// a marker of consumer's type
+	private int flag = type;
+	// state of each consumer
 	private boolean state = false;
-
-	// class constructor
-	public ConsumerFactory() {
-	}
-
-	// contructor with custom run pattern
+	
 	/**
-	 *
-	 * @param name
-	 * @param maxPower
-	 * @param minPower
-	 * @param maxChange
-	 * @param minChange
+	 * Constructor
+	 * 
+	 * @param name		name of consumer
+	 * @param maxPower	highest power consumer can reach
+	 * @param minPower	lowest power consumer can reach
+	 * @param maxChange	maximum amount to change power
+	 * @param minChange	minimum amount to change power
 	 */
-
 	public ConsumerFactory(String name, double maxPower, double minPower, double maxChange, double minChange) {
 		this.name = name;
-		this.setMinChange(minChange);
-		this.setMaxChange(maxChange);
-		this.setMinPower(minPower);
-		this.setMaxPower(maxPower);
-		this.power = minPower;
-		this.next();
+		setMinChange(minChange);
+		setMaxChange(maxChange);
+		setMinPower(minPower);
+		setMaxPower(maxPower);
+		power = minPower;
+		next();
 	}
-
-	// new
+	/**
+	 * 
+	 * @param iterationArray	array of iteration needs to be stored
+	 */
+	public static void setRunBehaviour(double[] iterationArray) {
+		ConsumerFactory.iterationArray = iterationArray;
+	}
+	/**
+	 * 
+	 * @return	the exact running iteration
+	 */
+	public int getIteration() {
+		return iteration;
+	}
+	public void setFlag(int x) {
+		flag = x;
+	}
+	public int getFlag() {
+		return flag;
+	}
 	public String getStatus() {
-		return ((this.state == false && this.getPower() == 0) ? "Off" : "On");
+		return ((state==false && getPower()==0) ? "Off" : "On");
 	}
-
-	// new
 	public String getName() {
 		return name;
 	}
-
-	// this method set consummer run behavior
-	public static void setRunBehaviour(double[] run_patt) {
-		ConsumerFactory.run_patt = run_patt;
-	}
-
 	/**
-	 * Generate a singe consumer with custom run Pattern
-	 *
-	 * @param name
-	 * @param maxPower
-	 * @param minPower
-	 * @param maxChange
-	 * @param minChange
-	 * @return
+	 * create a single consumer
+	 * @param name		name of consumer
+	 * @param maxPower	highest power consumer can reach
+	 * @param minPower	lowest power consumer can reach
+	 * @param maxChange	maximum amount to change power
+	 * @param minChange	minimum amount to change power
+	 * @return consumer of type AbstractComponent
 	 */
-	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange,
-			double minChange) {
-		// call the factory
-		// to generate a consumer
+	public static AbstractComponent generate(String name, double maxPower, double minPower, double maxChange, double minChange) {
 		return new ConsumerFactory(name, maxPower, minPower, maxChange, minChange);
 	}
-
 	/**
-	 *
-	 * Generate a set of consumers with custom run pattern.
-	 *
-	 * @param amount        Nr. of consumers to generate
-	 * @param avg_max_Power Mean maximun Power of <amount> consumers
-	 * @param deviation     Standard Deviation of power
-	 * @return
+	 * create a list of multiple consumers
+	 * @param quan		quantity of consumers
+	 * @param avgPower	average power of each consumer
+	 * @param deviation	standard deviation
+	 * @return a list of consumers of type AbstractComponent
 	 */
-	public static ArrayList<AbstractComponent> generate(int amount, int avg_max_Power, int deviation) {
-		// this is the list of consummer
+	public static ArrayList<AbstractComponent> generate(int quan, int avgPower,double deviation) {
 		ArrayList<AbstractComponent> consumers = new ArrayList<AbstractComponent>();
-		for (int i = 1; i <= amount; i++) {
-			double val_max = (-1 + Math.random() * (1 - (-1))) * deviation + (double) avg_max_Power;
-			consumers.add(new ConsumerFactory("c" + i, val_max, 1, val_max, (val_max -1)* (Math.random())));
-
+		/*
+		 * each time a list is created
+		 * a number of consumers are categorized into either Residential or Industrial
+		 * resetOrderCounter() is to reset the static counter in its class 
+		 * to make sure that order of consumers are consecutive despite randomizing 
+		 */
+		Residential.resetOrderCounter();
+		Industrial.resetOrderCounter();
+		for (int i = 1; i <= quan; ++i) {
+			double power = new Random().nextGaussian()*deviation + avgPower;
+			/*
+			 * type:represents for 2 types of consumers which are
+			 * 0:	residential consumer
+			 * 1:	industrial consumer
+			 */
+			// random the type of consumer
+			int flag = new Random().nextInt(type);
+			if (flag == 0) {
+				//consumers.add(new Residential("Residential area ", avgPower, avgPower*.15, avgPower*.7, avgPower*.1));
+				consumers.add(new Residential("Residential area ", power, Math.ceil(power*.2), power*.6, power*.3));
+			} else if (flag == 1){
+				//consumers.add(new Industrial("Industrial park ", avgPower, avgPower*.15, avgPower*.7, avgPower*.1));
+				consumers.add(new Industrial("Industrial park ", power, Math.ceil(power*.2), power*.6, power*.3));
+			}
 		}
-
 		return consumers;
 	}
 
 	@Override
 	public double getPower() {
-		return this.power;
+		return power;
 	}
 
 	@Override
 	public void setPower(double power) {
 		if (power == -1) {
-			this.state = false;
+			state = false;
 			this.power = 0;
-		} else if (this.power != power) {
-			if (Math.abs(this.power - power) > this.getMaxChange()) {
+		}else if (this.power != power) {
+			if (Math.abs(this.power - power) > getMaxChange()) {
 				if (power > this.power) {
-					this.power += this.getMaxChange();
+					this.power += getMaxChange();
 				} else {
-					this.power -= this.getMaxChange();
+					this.power -= getMaxChange();
 				}
-			} else if (Math.abs(this.power - power) < this.getMinChange()) {
+			} else if (Math.abs(this.power - power) < getMinChange()) {
 				if (power > this.power) {
-					this.power = power + this.getMinChange();
+					this.power += getMinChange();
 				} else {
-					this.power = power - this.getMinChange();
+					this.power -= getMinChange();
 				}
 			} else {
 				this.power = power;
 			}
 
-			if (this.power > this.getMaxPower()) {
-				this.power = this.getMaxPower();
-			} else if (this.power < this.getMinPower()) {
-				this.power = this.getMinPower();
+			if (this.power > getMaxPower()) {
+				this.power = getMaxPower();
+			} else if (this.power < getMinPower()) {
+				this.power = getMinPower();
 			}
-
 		}
-
 	}
 
 	@Override
+	/**
+	 * set new power for consumers
+	 * based on the percentage of consumption in each iteration 
+	 */
 	public void next() {
-		// the folowing iteration simulate the state of the consumer is active or not
-		// base on the consumtion pattern.
-		this.iteration++;
-		if (Math.random() < ConsumerFactory.run_patt[this.iteration]) {
-			this.state = true;
-			this.power = this.getMaxPower();
-		} else {
-			this.state = false;
-			this.power = this.getMinPower();
+		++iteration;
+		if(getStatus().equals("On")) {
+			if (Math.random() < ConsumerFactory.iterationArray[iteration]) {
+				state = true;
+				setPower(getMaxPower());
+			} else {
+				state = false;
+				setPower(getMinPower());
+			}
 		}
-		// if the consumer is active, set max power, otherwise, set min power
 	}
 
 	@Override
 	public double getCost() {
-		return this.power;
+		return power;
 	}
 
 }

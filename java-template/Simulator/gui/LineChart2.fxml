@@ -19,35 +19,42 @@
                   <TextField fx:id="iRemGen" layoutX="147.0" layoutY="295.0" prefHeight="31.0" prefWidth="89.0" />
                   <TextField fx:id="iRemCon" layoutX="147.0" layoutY="347.0" prefHeight="31.0" prefWidth="89.0" />
                   <Label fx:id="errMsg" layoutX="100.0" layoutY="264.0" text="Error Message" />
-                  <Text layoutX="28.0" layoutY="571.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Iteration:" />
-                  <Text layoutX="28.0" layoutY="592.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Frequency:" />
-                  <Text layoutX="27.0" layoutY="634.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Supply:" />
-                  <Text layoutX="30.0" layoutY="721.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily cost:" />
-                  <Text fill="#3629cc" layoutX="50.0" layoutY="687.0" strokeType="OUTSIDE" strokeWidth="0.0" text="After 12 iterations">
+                  <Text layoutX="30.0" layoutY="486.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Iteration:" />
+                  <Text layoutX="30.0" layoutY="507.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Frequency:" />
+                  <Text layoutX="29.0" layoutY="569.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Supply:" />
+                  <Text layoutX="32.0" layoutY="643.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily cost:" />
+                  <Text fill="#3629cc" layoutX="50.0" layoutY="621.0" strokeType="OUTSIDE" strokeWidth="0.0" text="After 12 iterations">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Text>
-                  <Label fx:id="showIteration" layoutX="131.0" layoutY="555.0" text="Label" />
-                  <Label fx:id="showFrequency" layoutX="131.0" layoutY="576.0" text="Label" />
-                  <Label fx:id="showDemand" layoutX="132.0" layoutY="597.0" text="Label" />
-                  <Label fx:id="showSupply" layoutX="132.0" layoutY="618.0" text="Label" />
-                  <Label fx:id="showCost" layoutX="131.0" layoutY="705.0" text="Label" />
-                  <Label fx:id="showProfit" layoutX="132.0" layoutY="733.0" text="Label" />
-                  <Text layoutX="27.0" layoutY="613.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Demand:" />
-                  <Label fx:id="showBalance" layoutX="132.0" layoutY="639.0" text="Label" />
-                  <Text layoutX="30.0" layoutY="749.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily profit:" />
-                  <Text layoutX="32.0" layoutY="655.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance" />
+                  <Label fx:id="showIteration" layoutX="133.0" layoutY="470.0" text="Label" />
+                  <Label fx:id="showFrequency" layoutX="133.0" layoutY="491.0" text="Label" />
+                  <Label fx:id="showDemand" layoutX="134.0" layoutY="532.0" text="Label" />
+                  <Label fx:id="showSupply" layoutX="134.0" layoutY="553.0" text="Label" />
+                  <Label fx:id="showCost" layoutX="133.0" layoutY="627.0" text="Label" />
+                  <Label fx:id="showProfit" layoutX="133.0" layoutY="648.0" text="Label" />
+                  <Text layoutX="29.0" layoutY="548.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Demand:" />
+                  <Label fx:id="showBalance" layoutX="134.0" layoutY="574.0" text="Label" />
+                  <Text layoutX="31.0" layoutY="664.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily profit:" />
+                  <Text layoutX="34.0" layoutY="590.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance" />
                   <Label fx:id="numGen" layoutX="133.0" layoutY="144.0" text="Label" />
                   <Label fx:id="numCon" layoutX="133.0" layoutY="189.0" text="Label" />
                   <Text layoutX="31.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generator(s):" />
                   <Text layoutX="30.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consumer(s):" />
-                  <Button layoutX="27.0" layoutY="53.0" mnemonicParsing="false" onAction="#showFullList" text="Show Full List" />
+                  <Button layoutX="27.0" layoutY="53.0" mnemonicParsing="false" onAction="#showFullList" prefHeight="31.0" prefWidth="134.0" text="Show Full List" />
                   <Text layoutX="33.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Active Consumer(s):" />
                   <Label fx:id="activeCon" layoutX="175.0" layoutY="229.0" text="Label" />
-                  <Button fx:id="backButton" layoutX="26.0" layoutY="7.0" mnemonicParsing="false" onAction="#backToInput" prefHeight="31.0" prefWidth="111.0" text="Back" />
+                  <Button fx:id="backButton" layoutX="26.0" layoutY="7.0" mnemonicParsing="false" onAction="#backToInput" prefHeight="31.0" prefWidth="134.0" text="Back" />
                   <Button fx:id="setOfButton" layoutX="26.0" layoutY="395.0" mnemonicParsing="false" onAction="#setConsumerOff" text="Set Con(s) Off" />
                   <TextField fx:id="iSetOff" layoutX="148.0" layoutY="395.0" prefHeight="31.0" prefWidth="89.0" />
+                  <Label fx:id="showStatus" layoutX="133.0" layoutY="512.0" text="Label" />
+                  <Text layoutX="30.0" layoutY="528.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status:" />
+                  <Text layoutX="31.0" layoutY="686.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total blackout:" />
+                  <Label fx:id="showBlackOut" layoutX="133.0" layoutY="670.0" text="Label" />
+                  <Text layoutX="31.0" layoutY="707.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total overload:" />
+                  <Label fx:id="showOverload" layoutX="132.0" layoutY="691.0" text="Label" />
+                  <Button layoutX="27.0" layoutY="98.0" mnemonicParsing="false" onAction="#showConsumers" text="Show Consumers" />
                </children>
             </AnchorPane>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="493.0" prefWidth="612.0">
@@ -63,8 +70,6 @@
                           </yAxis>
                         </LineChart>
                         <Button fx:id="printButton" layoutX="375.0" mnemonicParsing="false" onAction="#printData" prefHeight="31.0" prefWidth="59.0" text="Print" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <Button fx:id="scenOne" mnemonicParsing="false" onAction="#generateScene1" text="Scenario 1" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <Button fx:id="scenTwo" mnemonicParsing="false" onAction="#generateScene2" text="Scenario 2" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="0.0" />
                         <Button fx:id="nextIteration" layoutX="57.0" mnemonicParsing="false" onAction="#nextStep" text="Next Iteration" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>

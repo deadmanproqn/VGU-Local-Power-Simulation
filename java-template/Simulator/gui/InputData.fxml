@@ -70,18 +70,18 @@
                                     <content>
                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                              <children>
-                                                <Text layoutX="81.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
-                                                <Text layoutX="77.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max Power" />
-                                                <Text layoutX="79.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Min Power" />
-                                                <Text layoutX="79.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max Change" />
-                                                <Text layoutX="81.0" layoutY="321.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Min Change" />
-                                                <TextField fx:id="GenName" layoutX="236.0" layoutY="78.0" prefHeight="25.0" prefWidth="74.0" />
-                                                <TextField fx:id="GenMaxPower" layoutX="236.0" layoutY="130.0" prefHeight="25.0" prefWidth="74.0" />
-                                                <TextField fx:id="GenMinPower" layoutX="236.0" layoutY="189.0" prefHeight="25.0" prefWidth="74.0" />
-                                                <TextField fx:id="GenMaxChange" layoutX="236.0" layoutY="248.0" prefHeight="25.0" prefWidth="74.0" />
-                                                <TextField fx:id="GenMinChange" layoutX="236.0" layoutY="304.0" prefHeight="25.0" prefWidth="74.0" />
+                                                <Text layoutX="60.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
+                                                <Text layoutX="56.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max Power" />
+                                                <Text layoutX="58.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Min Power" />
+                                                <Text layoutX="58.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max Change" />
+                                                <Text layoutX="60.0" layoutY="322.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Min Change" />
+                                                <TextField fx:id="GenName" layoutX="202.0" layoutY="73.0" prefHeight="25.0" prefWidth="74.0" />
+                                                <TextField fx:id="GenMaxPower" layoutX="202.0" layoutY="125.0" prefHeight="25.0" prefWidth="74.0" />
+                                                <TextField fx:id="GenMinPower" layoutX="202.0" layoutY="184.0" prefHeight="25.0" prefWidth="74.0" />
+                                                <TextField fx:id="GenMaxChange" layoutX="202.0" layoutY="243.0" prefHeight="25.0" prefWidth="74.0" />
+                                                <TextField fx:id="GenMinChange" layoutX="202.0" layoutY="299.0" prefHeight="25.0" prefWidth="74.0" />
                                                 <Button fx:id="singleGenEnter" layoutX="158.0" layoutY="445.0" mnemonicParsing="false" onAction="#singleGenEnter" text="Enter" />
-                                                <Label fx:id="singleGenLabel" layoutX="167.0" layoutY="374.0" />
+                                                <Label fx:id="singleGenLabel" layoutX="146.0" layoutY="375.0" />
                                              </children>
                                           </AnchorPane>
                                     </content>
@@ -114,13 +114,12 @@
                            <children>
                               <Text layoutX="56.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Consumers:" wrappingWidth="116.11865234375" />
                               <Text layoutX="56.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Generators:" />
-                              <Button fx:id="startButton" layoutX="48.0" layoutY="227.0" mnemonicParsing="false" onAction="#startSimulation" text="Start Simulation" />
-                              <Button fx:id="showButton" layoutX="48.0" layoutY="324.0" mnemonicParsing="false" onAction="#showAllList" text="Show List" />
+                              <Button fx:id="startButton" layoutX="48.0" layoutY="227.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="31.0" prefWidth="242.0" text="Start Simulation" />
                               <Label fx:id="totalConsumer" layoutX="211.0" layoutY="78.0" text="0" />
                               <Label fx:id="totalGenerator" layoutX="211.0" layoutY="145.0" text="0" />
-                              <Label fx:id="simulation" layoutX="194.0" layoutY="232.0" />
-                              <Button fx:id="clearButton" layoutX="48.0" layoutY="275.0" mnemonicParsing="false" onAction="#clearData" text="Clear Data" />
-                              <Button layoutX="48.0" layoutY="372.0" mnemonicParsing="false" onAction="#generateScenario" text="Scenario Generate" />
+                              <Label fx:id="simulation" layoutX="94.0" layoutY="186.0" prefHeight="21.0" prefWidth="173.0" />
+                              <Button fx:id="clearButton" layoutX="48.0" layoutY="338.0" mnemonicParsing="false" onAction="#clearData" prefHeight="31.0" prefWidth="245.0" text="Clear Data" />
+                              <Button layoutX="48.0" layoutY="285.0" mnemonicParsing="false" onAction="#generateScenario" prefHeight="31.0" prefWidth="244.0" text="Generate Scenario" />
                            </children>
                         </AnchorPane>
                     </content>
@@ -136,6 +135,7 @@
                      <columns>
                         <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
                         <TableColumn fx:id="status" prefWidth="75.0" text="Status" />
+                        <TableColumn fx:id="power" prefWidth="75.0" text="Power" />
                         <TableColumn fx:id="maxPower" prefWidth="116.0" text="MaxPower" />
                         <TableColumn fx:id="minPower" prefWidth="94.0" text="MinPower" />
                         <TableColumn fx:id="maxChange" prefWidth="117.0" text="MaxChange" />

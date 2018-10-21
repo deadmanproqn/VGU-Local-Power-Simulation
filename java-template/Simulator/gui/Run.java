@@ -6,7 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
- 
+/**
+ * Class to start GUI application 
+ * @author Nguyen The Viet - 9990
+ *
+ */
 public class Run extends Application {
   
  
@@ -16,7 +20,7 @@ public class Run extends Application {
            Parent root = FXMLLoader.load(getClass()
                    .getResource("/gui/InputData.fxml"));
  
-           primaryStage.setTitle("My Application");
+           primaryStage.setTitle("Simulator-Input Data");
            primaryStage.setScene(new Scene(root));
            primaryStage.show();
         
